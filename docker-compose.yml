@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/usr/src/app
+      - C:/Users/Leul/Downloads/EasyApplyBot-master/EasyApplyBot-master/source:/usr/src/app/source
+    environment:
+      - NODE_ENV=development
+      - CSV_SUCCESS_PATH=/usr/src/app/source/output_USA.csv
+      - CSV_FAILED_PATH=/usr/src/app/source/failed_USA.csv
+      - FRONTEND_URL=http://localhost:3001
+      - PORT=5000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    environment:
+      - NODE_ENV=development
+      - BACKEND_URL=http://localhost:5000
+    depends_on:
+      - backend

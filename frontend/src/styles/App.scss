@@ -1,0 +1,191 @@
+.table-container {
+  margin: 20px auto;
+  width: 80%;
+  border-collapse: collapse;
+}
+
+table {
+  width: 100%;
+  border: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+thead {
+  background-color: #f2f2f2;
+  text-transform: uppercase;
+}
+
+th, td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+/* Animations for new rows */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.job-stats {
+  place-content: center;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.job-stats p {
+  margin: 5px 0;
+  font-size: 1.2rem;
+}
+.failed {
+  background-color: #ffcccc;
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.failed a {
+  color: #ff0000;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  list-style-type: none;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-item a {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.page-item a:hover {
+  background-color: #f1f1f1;
+}
+
+.page-item.active a {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 250px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.filters input::placeholder {
+  color: #999;
+}
+
+.filters select {
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.filters select option {
+  padding: 10px;
+}
+
+/* Add some responsiveness */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  }
+
+  &:active {
+    background-color: #004494;
+  }
+}
