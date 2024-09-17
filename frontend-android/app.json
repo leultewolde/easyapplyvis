@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "My Jobs",
+    "slug": "frontend-android",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/briefcase-icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/briefcase-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.rmhy.myjobs",
+      "versionCode": 1
+    },
+    "extra": {
+      "eas": {
+        "projectId": "57d347ea-d8ea-4d66-b47a-bed2aa140bc6"
+      }
+    }
+  }
+}

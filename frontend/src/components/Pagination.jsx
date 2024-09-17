@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const Pagination = ({ jobsPerPage, totalJobs, paginate, currentPage }) => {
     const pageNumbers = [];
@@ -12,7 +12,7 @@ const Pagination = ({ jobsPerPage, totalJobs, paginate, currentPage }) => {
             <ul className="pagination">
                 {pageNumbers.map(number => (
                     <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
-                        <a onClick={() => paginate(number)} href="!#" className="page-link">
+                        <a onClick={() => paginate(number)} href="#" className="page-link">
                             {number}
                         </a>
                     </li>
@@ -20,6 +20,13 @@ const Pagination = ({ jobsPerPage, totalJobs, paginate, currentPage }) => {
             </ul>
         </nav>
     );
+};
+
+Pagination.propTypes = {
+    jobsPerPage: PropTypes.number.isRequired,
+    totalJobs: PropTypes.number.isRequired,
+    paginate: PropTypes.number.isRequired,
+    currentPage: PropTypes.number.isRequired,
 };
 
 export default Pagination;
