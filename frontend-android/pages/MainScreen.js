@@ -109,8 +109,8 @@ const MainScreen = () => {
     const renderItem = ({item}) => (
         <View style={styles.item}>
             <View style={styles.header}>
-                <Text style={styles.title}>{item.Position}</Text>
-                <Text style={styles.company}>{item.Company}</Text>
+                <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{item.Position}</Text>
+                <Text style={styles.company} numberOfLines={1} ellipsizeMode="tail">{item.Company}</Text>
             </View>
 
             <Text style={styles.location}>
@@ -223,11 +223,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 5,
-    },
     searchContainer: {
         marginBottom: 5,
         marginHorizontal: 5,
@@ -260,6 +255,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         // paddingTop: 5,
     },
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+        flex: 1,
+    },
     item: {
         backgroundColor: '#fff',
         padding: 15,
@@ -271,16 +272,17 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 3,
     },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
-        flex: 1,
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 5,
     },
     company: {
         fontSize: 14,
         color: '#666',
         textAlign: 'right',
+        maxWidth: 150,
+        flexShrink: 1
     },
     location: {
         fontSize: 14,
