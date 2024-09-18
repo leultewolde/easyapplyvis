@@ -8,11 +8,13 @@ export default function StatsScreen() {
 
     // Helper functions to filter jobs based on date
     const isToday = (date) => moment(date).isSame(moment(), 'day');
+    const isYesterday = (date) => moment(date).isSame(moment().subtract(1, 'days'), 'day');
     const isThisWeek = (date) => moment(date).isSame(moment(), 'week');
     const isThisMonth = (date) => moment(date).isSame(moment(), 'month');
 
     // Calculate statistics
     const jobsToday = data.filter((job) => isToday(job['Applied At'])).length;
+    const jobsYesterday = data.filter((job) => isYesterday(job['Applied At'])).length;
     const jobsThisWeek = data.filter((job) => isThisWeek(job['Applied At'])).length;
     const jobsThisMonth = data.filter((job) => isThisMonth(job['Applied At'])).length;
     const failedJobs = data.filter((job) => job.Status === 'Failed').length;
@@ -24,6 +26,11 @@ export default function StatsScreen() {
             <View style={styles.stat}>
                 <Text style={styles.label}>Jobs Applied Today: </Text>
                 <Text style={styles.value}>{jobsToday}</Text>
+            </View>
+
+            <View style={styles.stat}>
+                <Text style={styles.label}>Jobs Applied Yesterday: </Text>
+                <Text style={styles.value}>{jobsYesterday}</Text>
             </View>
 
             <View style={styles.stat}>
