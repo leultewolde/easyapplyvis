@@ -18,8 +18,7 @@ const io = socketIo(server, {
 app.use(cors()); // Enable CORS for all routes
 
 // Paths to successful and failed job applications
-const csvFilePathSuccess = process.env.CSV_SUCCESS_PATH || 'C:/Users/Leul/Downloads/EasyApplyBot-master/EasyApplyBot-master/source/output_USA.csv'; // Successful applications
-const csvFilePathFailed = process.env.CSV_FAILED_PATH || 'C:/Users/Leul/Downloads/EasyApplyBot-master/EasyApplyBot-master/source/failed_USA.csv'; // Failed applications
+const csvDirectory = process.env.CSV_DIRECTORY_PATH || 'C:/Users/Leul/Downloads/EasyApplyBot-master/EasyApplyBot-master/source';
 
 const headers = ["Company", "Position", "Job Link", "Location", "Country", "Applied At", "Status"];
 
@@ -38,11 +37,25 @@ const readCsv = (filePath, status) => {
     });
 };
 
+// Function to find CSV files starting with "output" or "failed"
+const findCsvFiles = () => {
+    const files = fs.readdirSync(csvDirectory);
+    const successFiles = files.filter(file => file.startsWith('output') && file.endsWith('.csv'));
+    const failedFiles = files.filter(file => file.startsWith('failed') && file.endsWith('.csv'));
+    return { successFiles, failedFiles };
+};
+
 function sendCsvData(socket) {
+    const { successFiles, failedFiles } = findCsvFiles();
+
+    // Read all CSV files starting with "output" (Success) and "failed" (Failed)
+    const successPromises = successFiles.map(file => readCsv(path.join(csvDirectory, file), 'Success'));
+    const failedPromises = failedFiles.map(file => readCsv(path.join(csvDirectory, file), 'Failed'));
+
     // Read both CSV files
-    Promise.all([readCsv(csvFilePathSuccess, 'Success'), readCsv(csvFilePathFailed, 'Failed')])
+    Promise.all([...successPromises, ...failedPromises])
         .then((data) => {
-            const allData = [...data[0], ...data[1]]; // Combine successful and failed applications
+            const allData = data.flat(); // Combine successful and failed applications
 
             // Map each row to the corresponding headers
             const formattedData = allData.map((row) => {
@@ -65,21 +78,15 @@ function sendCsvData(socket) {
         });
 }
 
-// Watch for file changes in both the successful and failed CSVs
-const watchCsvFiles = () => {
-    [csvFilePathSuccess, csvFilePathFailed].forEach((filePath) => {
-        fs.watch(filePath, () => {
-            io.sockets.emit('fileChanged');
-        });
-    });
-};
+fs.watch(csvDirectory, () => {
+    io.sockets.emit('fileChanged');
+});
 
 io.on('connection', (socket) => {
     sendCsvData(socket);
     socket.on('refresh', () => sendCsvData(socket));
 });
 
-watchCsvFiles(); // Start watching both CSV files
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

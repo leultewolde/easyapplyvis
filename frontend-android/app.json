@@ -2,7 +2,7 @@
   "expo": {
     "name": "My Jobs",
     "slug": "frontend-android",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/briefcase-icon.png",
     "userInterfaceStyle": "light",
@@ -22,6 +22,16 @@
       "eas": {
         "projectId": "57d347ea-d8ea-4d66-b47a-bed2aa140bc6"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ]
   }
 }
