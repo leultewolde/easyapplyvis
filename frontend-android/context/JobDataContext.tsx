@@ -78,8 +78,11 @@ export function JobDataProvider({children}: {children: React.ReactNode}) {
     };
 
     const refreshData = () => {
-        if (socket) {
-            socket.emit('refresh'); // Trigger data refresh on the server
+        if (socket && socket.connected) {
+            console.log('Emitting refresh event');
+            socket.emit('refresh'); // Emit the refresh event to the server
+        } else {
+            console.error('Socket not connected, unable to refresh data');
         }
     };
 
