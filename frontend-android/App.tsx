@@ -7,16 +7,27 @@ import MainScreen from './pages/MainScreen';
 import StatsScreen from './pages/StatsScreen'; // Create this screen for the stats page
 import SettingsScreen from './pages/SettingsScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {JobDataProvider} from "./context/JobDataContext"; // Import the icon component
+import {JobData, JobDataProvider} from "./context/JobDataContext";
+import JobsListScreen from "./pages/JobsListScreen"; // Import the icon component
+
+type MainStackParams = {
+    MainScreen: undefined;
+    SettingsScreen: undefined;
+}
+type StatStackParams = {
+    StatsScreen: undefined;
+    JobsListScreen: { jobs: JobData[]; title: string };
+}
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const MainStackNav = createStackNavigator<MainStackParams>();
+const StatStackNav = createStackNavigator<StatStackParams>();
 
 // Create a stack for the MainScreen with the SettingsScreen button in the header
 function MainStack() {
   return (
-    <Stack.Navigator>
-        <Stack.Screen
+    <MainStackNav.Navigator>
+        <MainStackNav.Screen
             name="MainScreen"
             component={MainScreen}
             options={({ navigation }) => ({
@@ -32,9 +43,18 @@ function MainStack() {
                 ),
             })}
         />
-        <Stack.Screen name="SettingsScreen" options={{title: "Settings"}} component={SettingsScreen} />
-    </Stack.Navigator>
+        <MainStackNav.Screen name="SettingsScreen" options={{title: "Settings"}} component={SettingsScreen} />
+    </MainStackNav.Navigator>
   );
+}
+
+function StatsStack() {
+    return (
+        <StatStackNav.Navigator>
+            <StatStackNav.Screen name="StatsScreen" component={StatsScreen} options={{title: "Stats"}}/>
+            <StatStackNav.Screen name="JobsListScreen" options={{title: "Jobs List"}} component={JobsListScreen} />
+        </StatStackNav.Navigator>
+    );
 }
 
 export default function App() {
@@ -46,12 +66,12 @@ export default function App() {
                     tabBarIcon: ({ color, size }) => {
                         let iconName;
 
-                        if (route.name === 'HomeScreen') {
+                        if (route.name === 'Home') {
                             iconName = 'home';
-                        } else if (route.name === 'StatsScreen') {
-                            iconName = 'bar-chart';
+                        } else if (route.name === 'Stats') {
+                            iconName = 'pie-chart';
                         } else {
-                            iconName = 'help';
+                            iconName = 'flask';
                         }
 
                         return <Icon name={iconName} size={size} color={color} />;
@@ -60,8 +80,8 @@ export default function App() {
                     tabBarInactiveTintColor: "gray",
                 })}
             >
-                <Tab.Screen options={{headerShown: false}} name="HomeScreen" component={MainStack} />
-                <Tab.Screen name="StatsScreen" options={{title: "Stats"}} component={StatsScreen} />
+                <Tab.Screen options={{headerShown: false}} name="Home" component={MainStack} />
+                <Tab.Screen name="Stats" options={{headerShown: false}} component={StatsStack} />
             </Tab.Navigator>
         </NavigationContainer>
     </JobDataProvider>

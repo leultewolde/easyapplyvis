@@ -1,10 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import JobDataContext from "../context/JobDataContext";
+import {useNavigation} from "@react-navigation/native";
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = () => {
   const { saveBackendUrl, backendIpAddress } = useContext(JobDataContext); // Access saveBackendUrl from context
   const [ipAddress, setIpAddress] = useState(backendIpAddress);
+
+  const navigation = useNavigation();
 
   // Save the backend URL and navigate back
   const handleSave = () => {

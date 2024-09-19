@@ -1,21 +1,38 @@
 import React, {createContext, useEffect, useState} from 'react';
-import io from 'socket.io-client';
+import io, {Socket} from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const JobDataContext = createContext({
+export interface JobData {
+    Company: string;
+    Position: string;
+    "Job Link": string;
+    Location: string;
+    Country: string;
+    "Applied At": string;
+    Status: string;
+}
+
+type JobDataContextProps = {
+    data: JobData[],
+    backendIpAddress: string,
+    saveBackendUrl: (newIP:string) => void,
+    refreshData: () => void
+}
+
+const JobDataContext = createContext<JobDataContextProps>({
     data: [],
     backendIpAddress: '',
     saveBackendUrl: () => {},
     refreshData: () => {}
 });
 
-const DEFAULT_IP_ADDRESS = "192.168.1.109";
-const DEFAULT_PORT = "5000";
+const DEFAULT_IP_ADDRESS:string = "192.168.1.109";
+const DEFAULT_PORT:string = "5000";
 
-export function JobDataProvider({children}) {
-    const [data, setData] = useState([]);
-    const [backendIpAddress, setBackendIpAddress] = useState(DEFAULT_IP_ADDRESS);
-    const [socket, setSocket] = useState(null);
+export function JobDataProvider({children}: {children: React.ReactNode}) {
+    const [data, setData] = useState<JobData[]>([]);
+    const [backendIpAddress, setBackendIpAddress] = useState<string>(DEFAULT_IP_ADDRESS);
+    const [socket, setSocket] = useState<Socket|null>(null);
 
     useEffect(() => {
         const loadBackendUrl = async () => {
@@ -32,11 +49,11 @@ export function JobDataProvider({children}) {
         loadBackendUrl();
     }, []);
 
-    const constructUrl = (ip) => {
+    const constructUrl = (ip:string) => {
         return `http://${ip}:${DEFAULT_PORT}`;
     }
 
-    const initializeSocket = (ip) => {
+    const initializeSocket = (ip:string) => {
         const url = constructUrl(ip);
         const socketInstance = io(url);
         setSocket(socketInstance);
@@ -50,7 +67,7 @@ export function JobDataProvider({children}) {
         };
     };
 
-    const saveBackendUrl = async (newIP) => {
+    const saveBackendUrl = async (newIP:string) => {
         try {
             await AsyncStorage.setItem('backendIp', newIP);
             setBackendIpAddress(newIP);
