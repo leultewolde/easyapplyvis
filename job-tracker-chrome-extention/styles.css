@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    padding: 15px;
+    margin: 0;
+    width: 350px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #444444;
+    margin-bottom: 10px;
+}
+
+#jobsList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.job-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.job-item:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.job-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    color: #007bff;
+}
+
+.job-title:hover {
+    text-decoration: underline;
+}
+
+.job-company,
+.job-date {
+    font-size: 0.8rem;
+    /* Smaller text size for company and date */
+    color: #666;
+    margin: 2px 0;
+    /* Less space between lines */
+}
+
+.empty-message {
+    text-align: center;
+    color: #888;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+/* Add a smooth scroll effect for better UX */
+html {
+    scroll-behavior: smooth;
+}
