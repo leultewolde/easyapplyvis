@@ -1,32 +1,50 @@
-import PropTypes from 'prop-types';
+import {useContext} from "react";
+import JobsContext from "../context/JobsContext.jsx";
 
-const Pagination = ({ jobsPerPage, totalJobs, paginate, currentPage }) => {
+const Pagination = () => {
+    const {
+        pageRange,
+        totalPages,
+        currentPage,
+        goToPage,
+        toNextPageRange,
+        toPrevPageRange
+    } = useContext(JobsContext);
+
     const pageNumbers = [];
 
-    for (let i = 1; i <= Math.ceil(totalJobs / jobsPerPage); i++) {
+
+    for (let i = pageRange.start; i <= Math.min(pageRange.end, totalPages); i++) {
         pageNumbers.push(i);
     }
 
     return (
         <nav>
             <ul className="pagination">
+                {pageRange.start > 1 && (
+                    <li className="page-item">
+                        <button onClick={toPrevPageRange} className="page-link">
+                            &laquo;
+                        </button>
+                    </li>
+                )}
                 {pageNumbers.map(number => (
                     <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
-                        <a onClick={() => paginate(number)} href="#" className="page-link">
+                        <a onClick={() => goToPage(number)} href="#" className="page-link">
                             {number}
                         </a>
                     </li>
                 ))}
+                {pageRange.end < totalPages && (
+                    <li className="page-item">
+                        <button onClick={toNextPageRange} className="page-link">
+                            &raquo;
+                        </button>
+                    </li>
+                )}
             </ul>
         </nav>
     );
-};
-
-Pagination.propTypes = {
-    jobsPerPage: PropTypes.number.isRequired,
-    totalJobs: PropTypes.number.isRequired,
-    paginate: PropTypes.number.isRequired,
-    currentPage: PropTypes.number.isRequired,
 };
 
 export default Pagination;

@@ -1,43 +1,43 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const {Server} = require('socket.io');
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
+const chokidar = require('chokidar');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
+const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
     }
 });
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 
-// Paths to successful and failed job applications
+
 const csvDirectory = process.env.CSV_DIRECTORY_PATH || 'C:/Users/Leul/Downloads/EasyApplyBot-master/EasyApplyBot-master/source';
 
 const headers = ["Company", "Position", "Job Link", "Location", "Country", "Applied At", "Status"];
 
-// Helper function to read CSV files and append a status
 const readCsv = (filePath, status) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const data = [];
         fs.createReadStream(filePath)
-            .pipe(csv({ headers: false })) // Ignore CSV headers if any
+            .pipe(csv({ headers: false }))
             .on('data', (row) => {
                 const formattedRow = Object.values(row);
-                formattedRow.push(status); // Append the status (e.g., 'Success' or 'Failed')
+                formattedRow.push(status);
                 data.push(formattedRow);
             })
-            .on('end', () => resolve(data));
+            .on('end', () => resolve(data))
+            .on('error', (err) => reject(err))
     });
 };
 
-// Function to find CSV files starting with "output" or "failed"
 const findCsvFiles = () => {
     const files = fs.readdirSync(csvDirectory);
     const successFiles = files.filter(file => file.startsWith('output') && file.endsWith('.csv'));
@@ -48,20 +48,24 @@ const findCsvFiles = () => {
 function sendCsvData(socket) {
     const { successFiles, failedFiles } = findCsvFiles();
 
-    // Read all CSV files starting with "output" (Success) and "failed" (Failed)
     const successPromises = successFiles.map(file => readCsv(path.join(csvDirectory, file), 'Success'));
     const failedPromises = failedFiles.map(file => readCsv(path.join(csvDirectory, file), 'Failed'));
 
     // Read both CSV files
     Promise.all([...successPromises, ...failedPromises])
         .then((data) => {
-            const allData = data.flat(); // Combine successful and failed applications
+            const successData = data.slice(0, successFiles.length).flat();
+            const failedData = data.slice(successFiles.length).flat();
 
-            // Map each row to the corresponding headers
+            const failedJobsSet = new Set(failedData.map(row => row[2]));
+            const filteredSuccessData = successData.filter(row => !failedJobsSet.has(row[2]));
+
+            const allData = [...filteredSuccessData, ...failedData];
+
             const formattedData = allData.map((row) => {
                 const mappedRow = {};
                 headers.forEach((header, index) => {
-                    mappedRow[header] = row[index] || ''; // Map each column to custom headers
+                    mappedRow[header] = row[index] || '';
                 });
                 return mappedRow;
             });
@@ -72,15 +76,26 @@ function sendCsvData(socket) {
                 return dateB - dateA; // Sort by date in descending order
             });
 
-
-            // Emit the combined and formatted data
             socket.emit('csvData', { headers, data: sortedData });
+        })
+        .catch((err) => {
+            console.error('Error reading CSV files:', err);
         });
 }
 
-fs.watch(csvDirectory, () => {
+const watcher = chokidar.watch(csvDirectory, {
+    persistent: true,
+    ignoreInitial: true,
+});
+
+watcher.on('change', (filePath) => {
+    console.log(`File changed: ${filePath}`);
     io.sockets.emit('fileChanged');
 });
+
+// fs.watch(csvDirectory, () => {
+//     io.sockets.emit('fileChanged');
+// });
 
 io.on('connection', (socket) => {
     sendCsvData(socket);
@@ -88,7 +103,7 @@ io.on('connection', (socket) => {
 });
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

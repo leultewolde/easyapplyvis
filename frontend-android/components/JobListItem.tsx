@@ -1,38 +1,60 @@
-import {JobData} from "../context/JobDataContext";
-import {Linking, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import moment from "moment/moment";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {JobData} from "../types";
+import {isAlreadyLiked} from "../utils";
 
-
-export default function JobListItem({job}:{job:JobData}) {
+export default function JobListItem({job, onPress}: { job: JobData, onPress: () => void }) {
+    const [isLiked, setIsLiked] = useState(false);
+    useEffect(() => {
+        isAlreadyLiked(job.Company).then((value) => {
+            setIsLiked(value);
+        });
+    })
     return (
-        <View style={styles.item}>
+        <TouchableOpacity
+            style={styles.item}
+            onPress={onPress}>
             <View style={styles.header}>
                 <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{job.Position}</Text>
-                <Text style={styles.company} numberOfLines={1} ellipsizeMode="tail">{job.Company}</Text>
+                <View>
+                    <Text style={[styles.status, job.Status === 'Success' ? styles.success : styles.failed]}>
+                        <Icon name={job.Status === 'Success' ? 'checkmark-circle-outline' : 'close-circle-outline'}
+                              size={14} color={job.Status === 'Success' ? 'green' : 'red'}/>{' '}
+                        {job.Status}
+                    </Text>
+                    {isLiked && (<Text style={{color: 'blue', fontSize: 14}}>
+                        <Icon name='thumbs-up-outline' size={14} color='blue'/>{' '}Liked
+                    </Text>)}
+                </View>
             </View>
 
-            <Text style={styles.location}>
-                <Icon name="location-outline" size={14} color="#4A90E2"/> {job.Location}, {job.Country}
+            <Text style={styles.company}>
+                <Icon name="briefcase-outline" size={14} color="#4A90E2"/> {job.Company}
             </Text>
+
+            {/*<Text style={styles.location}>*/}
+            {/*    <Icon name="location-outline" size={14} color="#4A90E2"/> {job.Location}, {job.Country}*/}
+            {/*</Text>*/}
+
 
             <Text style={styles.appliedAt}>
                 <Icon name="calendar-outline" size={14}
                       color="#4A90E2"/> {moment(job["Applied At"]).format('MMM Do YYYY, h:mm a')}
             </Text>
 
-            <TouchableOpacity onPress={() => Linking.openURL(job["Job Link"])} style={styles.linkContainer}>
-                <Icon name="link-outline" size={14} color="#4A90E2"/>
-                <Text style={styles.link}>View Job Posting</Text>
-            </TouchableOpacity>
+            {/*<TouchableOpacity onPress={() => Linking.openURL(job["Job Link"])} style={styles.linkContainer}>*/}
+            {/*    <Icon name="link-outline" size={14} color="#4A90E2"/>*/}
+            {/*    <Text style={styles.link}>View Job Posting</Text>*/}
+            {/*</TouchableOpacity>*/}
 
-            <Text style={[styles.status, job.Status === 'Success' ? styles.success : styles.failed]}>
-                <Icon name={job.Status === 'Success' ? 'checkmark-circle-outline' : 'close-circle-outline'} size={16}
-                      color={job.Status === 'Success' ? 'green' : 'red'}/>{' '}
-                {job.Status}
-            </Text>
-        </View>
+            {/*<Text style={[styles.status, job.Status === 'Success' ? styles.success : styles.failed]}>*/}
+            {/*    <Icon name={job.Status === 'Success' ? 'checkmark-circle-outline' : 'close-circle-outline'} size={16}*/}
+            {/*          color={job.Status === 'Success' ? 'green' : 'red'}/>{' '}*/}
+            {/*    {job.Status}*/}
+            {/*</Text>*/}
+        </TouchableOpacity>
     );
 }
 
@@ -61,10 +83,8 @@ const styles = StyleSheet.create({
     },
     company: {
         fontSize: 14,
-        color: '#666',
-        textAlign: 'right',
-        maxWidth: 150,
-        flexShrink: 1
+        color: '#999',
+        marginBottom: 5,
     },
     location: {
         fontSize: 14,
@@ -72,9 +92,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     appliedAt: {
-        fontSize: 12,
+        fontSize: 14,
         color: '#999',
-        marginBottom: 5,
+        marginBottom: 5
     },
     linkContainer: {
         flexDirection: 'row',
@@ -89,6 +109,7 @@ const styles = StyleSheet.create({
     status: {
         fontSize: 14,
         fontWeight: 'bold',
+        flexDirection: 'column'
     },
     success: {
         color: 'green',

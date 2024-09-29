@@ -1,16 +1,16 @@
-.table-container {
-  margin: 20px auto;
-  width: 80%;
-  border-collapse: collapse;
+* {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
-  width: 100%;
+  width: 80%;
+  margin: 20px auto;
   border: 1px solid #ddd;
   font-family: Arial, sans-serif;
   text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  border-collapse: collapse;
 }
 
 thead {
@@ -49,33 +49,24 @@ h1 {
   opacity: 0;
   transform: translateY(-10px);
 }
+
 .fade-enter-active {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 500ms, transform 500ms;
 }
+
 .fade-exit {
   opacity: 1;
   transform: translateY(0);
 }
+
 .fade-exit-active {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 500ms, transform 500ms;
 }
 
-.job-stats {
-  place-content: center;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-}
-
-.job-stats p {
-  margin: 5px 0;
-  font-size: 1.2rem;
-}
 .failed {
   background-color: #ffcccc;
   color: #ff0000;
@@ -114,9 +105,10 @@ h1 {
   color: white;
   border-color: #007bff;
 }
+
 .filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   gap: 10px;
   margin-bottom: 20px;
   justify-content: space-between;
@@ -189,3 +181,80 @@ h1 {
     background-color: #004494;
   }
 }
+
+.job-stats {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 20px;
+}
+
+.job-stat__item {
+  flex-basis: auto;
+  padding: 5px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
+.stat-content {
+  padding: 5px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #6c757d;
+}
+
+.button-container {
+  margin-left: 10px;
+}
+
+.button-white {
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: #007bff;
+    color: #ffffff;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  }
+
+  &:active {
+    background-color: #004494;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-stats {
+    flex-wrap: wrap;
+  }
+
+  .job-stat__item {
+    flex-basis: calc(33% - 0.5rem);
+  }
+}
+

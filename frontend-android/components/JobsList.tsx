@@ -1,9 +1,10 @@
-import {JobData} from "../context/JobDataContext";
-import {FlatList, RefreshControl, StyleSheet, Text, View} from "react-native";
+import {Button, FlatList, RefreshControl, StyleSheet, Text, View} from "react-native";
 import React, {useState} from "react";
 import JobListItem from "./JobListItem";
 import JobFilters from "./JobFilters";
 import PaginationControls from "./PaginationControls";
+import {JobData} from "../types";
+import {StackNavigationProp} from "@react-navigation/stack";
 
 interface JobListProps {
     title?: string;
@@ -13,6 +14,7 @@ interface JobListProps {
     enableRefresh?: boolean,
     enableJobFilters?: boolean,
     enablePaginationControls?: boolean,
+    navigation: StackNavigationProp<any>
 }
 
 export default function JobsList({
@@ -20,6 +22,7 @@ export default function JobsList({
                                      jobs,
                                      isRefreshing,
                                      onRefresh,
+                                     navigation,
                                      enableRefresh = false,
                                      enableJobFilters = false,
                                      enablePaginationControls = false,
@@ -30,10 +33,18 @@ export default function JobsList({
     const [selectedLocation, setSelectedLocation] = useState('all');
     const [selectedStatus, setSelectedStatus] = useState('all');
 
-    const renderItem = ({item}: { item: JobData }) => <JobListItem job={item}/>
+    const renderItem = ({item}: { item: JobData }) =>
+        <JobListItem
+            job={item}
+            onPress={() => navigation.navigate('JobItemScreen', {job: item})}/>
 
     if (jobs && jobs.length <= 0) {
-        return <Text style={styles.loadingText}>No jobs found...</Text>;
+        return (
+            <View>
+                <Text style={styles.loadingText}>No jobs found...</Text>
+                <Button title="Refresh" onPress={onRefresh}/>
+            </View>
+        );
     }
 
     const filteredJobs = jobs.filter((job) => {
